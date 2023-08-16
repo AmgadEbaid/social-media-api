@@ -10,10 +10,13 @@ export class userService {
     @InjectRepository(users) private userRepository: Repository<users>,
   ) {}
 
-  async findone(id: string) {
+  async findone(id: number) {
     if (!id) return;
 
-    const user = this.userRepository.findOne({ where: { id: id } });
+    const user = this.userRepository.findOne({
+      where: { id: id },
+      relations: { articles: true },
+    });
     if (!user) throw new NotFoundException('not found');
     return user;
   }

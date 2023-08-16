@@ -1,14 +1,27 @@
-import { type } from "os";
-import { users } from "src/users/user.entity";
-import { Entity ,PrimaryGeneratedColumn,Column, CreateDateColumn, UpdateDateColumn, ManyToOne} from "typeorm";
+import { type } from 'os';
+import { Comments } from 'src/comments/comments.entity';
+import { users } from 'src/users/user.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  DeleteDateColumn,
+  OneToMany,
+} from 'typeorm';
 
-@Entity({ name: 'articles' })
+@Entity()
 export class articles {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   titile: string;
+
+  @Column()
+  slug: string;
 
   @Column()
   content: string;
@@ -19,8 +32,14 @@ export class articles {
   @UpdateDateColumn()
   updated: Date;
 
-  @ManyToOne(() =>(users) , (users) =>(users.articles))
-  user:users
+  @ManyToOne(() => users, (user) => user.articles)
+  user: users;
 
-  
+  @OneToMany(() => Comments, (Comments) => Comments.article)
+  comments: Comments[];
+
+  @Column()
+  userId: number;
+  @DeleteDateColumn()
+  deletedDate: Date;
 }

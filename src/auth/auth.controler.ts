@@ -11,6 +11,7 @@ import { users } from 'src/users/user.entity';
 import { localAuthGard } from './gards/local.gard';
 import { createUser } from 'src/users/dtos/create.user.dto';
 import { JwtAuthGuard } from './gards/jwt.gard';
+import { currentUser } from 'src/decorators/current-user.decorator';
 
 @Controller('auth')
 export class authControler {
@@ -29,8 +30,8 @@ export class authControler {
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  getprofile(@Request() req) {
-    console.log(req.user);
-    return req.user;
+  getprofile(@currentUser() user: users) {
+    return user;
   }
+  
 }

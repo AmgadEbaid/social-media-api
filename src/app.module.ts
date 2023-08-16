@@ -11,18 +11,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import { UsersModule } from './users/users.module';
 import { APP_PIPE } from '@nestjs/core';
-import { authService } from './auth/auth.service';
 import { authModule } from './auth/auth.module';
-import { getConnection } from 'typeorm';
 import { Session } from './auth/session.entity';
-import { Console } from 'console';
 import { DataSource } from 'typeorm';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { TypeormStore } from 'connect-typeorm';
 import { ArticlesModule } from './articles/articles.module';
-import { AritclesController } from './aritcles/aritcles.controller';
-
+import { CaslModule } from './casl/casl.module';
+import { CommentsModule } from './comments/comments.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,8 +38,10 @@ import { AritclesController } from './aritcles/aritcles.controller';
     authModule,
     UsersModule,
     ArticlesModule,
+    CaslModule,
+    CommentsModule,
   ],
-  controllers: [AppController, AritclesController],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_PIPE,

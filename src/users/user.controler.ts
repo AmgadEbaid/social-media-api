@@ -18,8 +18,9 @@ export class userscontroler {
   async create(@Body() user: createUser) {
     return await this.userservice.create(user);
   }
-  @Get('/users/:id')
-  async findone(@Param('id') id: string) {
+
+  @Get('/:id')
+  async findone(@Param('id') id: number) {
     return this.userservice.findone(id);
   }
 }
