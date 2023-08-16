@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { articles } from 'src/articles/models/articles.entity';
 import { Comments } from 'src/comments/comments.entity';
@@ -24,4 +30,7 @@ export class users {
 
   @OneToMany(() => Comments, (Comments) => Comments.user)
   comments: Comments[];
+
+  @ManyToMany(() => articles, (articles) => articles.favoreteUsers)
+  favoriteArticle: articles[];
 }

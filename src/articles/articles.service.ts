@@ -73,4 +73,26 @@ export class ArticlesService {
     }
     return ruslt.getManyAndCount();
   }
+
+  async addFavorites(user: users, articleId: articles['id']) {
+    const article = await this.articleRepository.findOneBy({ id: articleId });
+    if (!article) {
+      throw new NotFoundException('article was not found');
+    }
+    await this.articleRepository
+      .createQueryBuilder()
+      .relation(articles, 'favoreteUsers')
+      .of(article)
+      .add(user);
+
+    return article;
+  }
+
+  async deleteFavorites(user: users, articleId: articles['id']) {
+    await this.articleRepository
+      .createQueryBuilder()
+      .relation(articles, 'favoreteUsers')
+      .of(articleId)
+      .add(user);
+  }
 }

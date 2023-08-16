@@ -9,6 +9,7 @@ import {
   Patch,
   Delete,
   ForbiddenException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CaslAbilityFactory } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { currentUser } from 'src/decorators/current-user.decorator';
@@ -77,5 +78,23 @@ export class ArticlesController {
       throw new ForbiddenException('user can not update this article');
     }
     return this.articleservice.deleteArticle(id);
+  }
+
+  @Post('addfavorites/:id')
+  @UseGuards(JwtAuthGuard)
+  addFavorites(
+    @currentUser() user: users,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.articleservice.addFavorites(user, id);
+  }
+
+  @Post('deletefavorites/:id')
+  @UseGuards(JwtAuthGuard)
+  deleteFavorites(
+    @currentUser() user: users,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.articleservice.deleteFavorites(user, id);
   }
 }
