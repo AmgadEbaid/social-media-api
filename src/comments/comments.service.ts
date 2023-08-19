@@ -18,7 +18,7 @@ export class CommentsService {
   ) {}
 
   async createComment(user: users, createComment: CreateComment) {
-    const { articleId, parentId, body } = createComment;
+    const { articleId, body } = createComment;
 
     const article = await this.articleRepository.findOneBy({
       id: articleId,
@@ -28,67 +28,19 @@ export class CommentsService {
       throw new NotFoundException('article not found');
     }
 
-    let parentComment: Comments;
-    if (Number.isInteger(parentId)) {
-      parentComment = await this.commentsRepository.findOneBy({
-        id: parentId,
-        articleId: articleId,
-      });
-    }
-
-    if (Number.isInteger(parentId) && !parentComment) {
-      throw new NotFoundException('parent comment was not found');
-    }
-
     const comment = this.commentsRepository.create({
       body: body,
       user: user,
       article: article,
-      parent: parentComment,
     });
 
     return this.commentsRepository.save(comment);
   }
 
   async getComments(articlId: number) {
-    const article = await this.articleRepository.findOneBy({
-      id: articlId,
-    });
-    if (!article) {
-      throw new NotFoundException('article was not found');
-    }
-    const roots = await this.commentsRepository.manager
-      .getTreeRepository(Comments)
-      .findRoots();
-    const filteredRoots = roots.filter((root) => root.articleId === articlId);
-
-    for (const root of roots) {
-      const numberOfChildren = await this.commentsRepository.manager
-        .createQueryBuilder(Comments, 'comment')
-        .where('comment.parentId = :parentId', { parentId: root.id })
-        .getCount();
-      Object.assign(root, { ...root, children: numberOfChildren });
-    }
-    return filteredRoots;
+    return this.commentsRepository.findBy({ id: articlId });
   }
 
-  async getCommentChildrens(articleId: number, ParentId: number) {
-    const article = await this.articleRepository.findOneBy({
-      id: articleId,
-    });
-    if (!article) {
-      throw new NotFoundException('article was not found');
-    }
-
-    const parentComment = await this.commentsRepository.manager
-      .getTreeRepository(Comments)
-      .findOneBy({ articleId: articleId, id: ParentId });
-
-    const commentChildrens = await this.commentsRepository.manager
-      .getTreeRepository(Comments)
-      .findDescendantsTree(parentComment);
-    return commentChildrens;
-  }
   findOne(id: number) {
     return this.commentsRepository.findOneBy({ id: id });
   }

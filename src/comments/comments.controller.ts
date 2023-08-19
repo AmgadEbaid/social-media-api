@@ -39,17 +39,10 @@ export class CommentsController {
   }
 
   @Get('article/:id')
-  getRootComments(@Param('id', ParseIntPipe) id: number) {
+  getComments(@Param('id', ParseIntPipe) id: number) {
     return this.commentService.getComments(id);
   }
 
-  @Get('article/:id/:commentId')
-  getCommentChildrens(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('commentId', ParseIntPipe) commentId: number,
-  ) {
-    return this.commentService.getCommentChildrens(id, commentId);
-  }
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async updateComment(

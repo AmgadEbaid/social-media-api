@@ -8,8 +8,4 @@ export class CreateComment {
   @IsNumber()
   @IsNotEmpty()
   articleId: number;
-
-  @IsNumber()
-  @IsOptional()
-  parentId: number;
 }

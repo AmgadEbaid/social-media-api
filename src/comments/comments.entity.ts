@@ -16,7 +16,6 @@ import {
 import { Exclude, Transform } from 'class-transformer';
 
 @Entity()
-@Tree('closure-table')
 export class Comments {
   @PrimaryGeneratedColumn()
   id: number;
@@ -44,14 +43,6 @@ export class Comments {
   })
   user: users;
 
-  @ManyToOne(() => articles, (articles) => articles.comments, {
-    eager: true,
-  })
+  @ManyToOne(() => articles, (articles) => articles.comments, {})
   article: articles;
-
-  @TreeChildren()
-  children: Comments[];
-
-  @TreeParent()
-  parent: Comments;
 }
