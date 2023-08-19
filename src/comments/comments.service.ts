@@ -57,14 +57,37 @@ export class CommentsService {
     if (!article) {
       throw new NotFoundException('article was not found');
     }
-    const comments = await this.commentsRepository.manager
+    const roots = await this.commentsRepository.manager
       .getTreeRepository(Comments)
-      .findBy({ articleId: articlId });
+      .findRoots();
+    const filteredRoots = roots.filter((root) => root.articleId === articlId);
 
-    const children = await this.commentsRepository.manager
+    for (const root of roots) {
+      const numberOfChildren = await this.commentsRepository.manager
+        .createQueryBuilder(Comments, 'comment')
+        .where('comment.parentId = :parentId', { parentId: root.id })
+        .getCount();
+      Object.assign(root, { ...root, children: numberOfChildren });
+    }
+    return filteredRoots;
+  }
+
+  async getCommentChildrens(articleId: number, ParentId: number) {
+    const article = await this.articleRepository.findOneBy({
+      id: articleId,
+    });
+    if (!article) {
+      throw new NotFoundException('article was not found');
+    }
+
+    const parentComment = await this.commentsRepository.manager
       .getTreeRepository(Comments)
-      .findDescendantsTree(comments[0]);
-    return children;
+      .findOneBy({ articleId: articleId, id: ParentId });
+
+    const commentChildrens = await this.commentsRepository.manager
+      .getTreeRepository(Comments)
+      .findDescendantsTree(parentComment);
+    return commentChildrens;
   }
   findOne(id: number) {
     return this.commentsRepository.findOneBy({ id: id });

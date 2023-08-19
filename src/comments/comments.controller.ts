@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   ForbiddenException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { currentUser } from 'src/decorators/current-user.decorator';
@@ -38,10 +39,17 @@ export class CommentsController {
   }
 
   @Get('article/:id')
-  getComments(@Param('id') id: number) {
+  getRootComments(@Param('id', ParseIntPipe) id: number) {
     return this.commentService.getComments(id);
   }
 
+  @Get('article/:id/:commentId')
+  getCommentChildrens(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('commentId', ParseIntPipe) commentId: number,
+  ) {
+    return this.commentService.getCommentChildrens(id, commentId);
+  }
   @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async updateComment(
