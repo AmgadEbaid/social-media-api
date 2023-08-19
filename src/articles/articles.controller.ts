@@ -89,7 +89,7 @@ export class ArticlesController {
     return this.articleservice.addFavorites(user, id);
   }
 
-  @Post('deletefavorites/:id')
+  @Delete('deletefavorites/:id')
   @UseGuards(JwtAuthGuard)
   deleteFavorites(
     @currentUser() user: users,
