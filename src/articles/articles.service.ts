@@ -79,20 +79,53 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException('article was not found');
     }
-    await this.articleRepository
+
+    const userLiked = await this.articleRepository
       .createQueryBuilder()
-      .relation(articles, 'favoreteUsers')
-      .of(article)
-      .add(user);
+      .innerJoinAndSelect('articles.favoreteUsers', 'users')
+      .where('articles.Id = :id', { id: articleId })
+      .andWhere('users.id =:userid', { userid: user.id })
+      .getOne();
 
-    return article;
-  }
+    if (userLiked) {
+      return { msg: 'user is already liked this article' };
+    }
 
-  async deleteFavorites(user: users, articleId: articles['id']) {
     await this.articleRepository
       .createQueryBuilder()
       .relation(articles, 'favoreteUsers')
       .of(articleId)
       .add(user);
+
+    await this.articleRepository.increment(
+      { id: articleId },
+      'favoriteCount',
+      1,
+    );
+  }
+
+  async deleteFavorites(user: users, articleId: articles['id']) {
+    const userLiked = await this.articleRepository
+      .createQueryBuilder()
+      .innerJoinAndSelect('articles.favoreteUsers', 'users')
+      .where('articles.Id = :id', { id: articleId })
+      .andWhere('users.id =:userid', { userid: user.id })
+      .getOne();
+
+    if (!userLiked) {
+      throw new NotFoundException('user does not like this article');
+    }
+
+    await this.articleRepository
+      .createQueryBuilder()
+      .relation(articles, 'favoreteUsers')
+      .of(articleId)
+      .remove(user);
+
+    await this.articleRepository.decrement(
+      { id: articleId },
+      'favoriteCount',
+      1,
+    );
   }
 }
