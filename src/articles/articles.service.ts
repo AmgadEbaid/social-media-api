@@ -128,4 +128,12 @@ export class ArticlesService {
       1,
     );
   }
+
+  getUserFavorites(user: users) {
+    return this.articleRepository
+      .createQueryBuilder()
+      .innerJoinAndSelect('articles.favoreteUsers', 'users')
+      .where('users.id =:userid', { userid: user.id })
+      .getManyAndCount();
+  }
 }

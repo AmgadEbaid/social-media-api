@@ -35,6 +35,12 @@ export class ArticlesController {
     console.log(article);
     return this.articleservice.createArticle(user, titile, slug, content);
   }
+  @Get('Favorites')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  getUserFavorites(@currentUser() user: users) {
+    return this.articleservice.getUserFavorites(user);
+  }
 
   @Get('/s')
   @UseInterceptors(ClassSerializerInterceptor)
