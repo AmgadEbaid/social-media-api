@@ -11,7 +11,6 @@ import {
   ForbiddenException,
   ParseIntPipe,
 } from '@nestjs/common';
-import { CaslAbilityFactory } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { currentUser } from 'src/decorators/current-user.decorator';
 import { users } from 'src/users/user.entity';
 import { createArticle } from './articles.dto/createArticle.dto';
@@ -20,14 +19,13 @@ import { JwtAuthGuard } from 'src/auth/gards/jwt.gard';
 import { QueryArticle } from './articles.dto/query-article.dto';
 import { UpDateArticle } from './articles.dto/update-article.dto';
 import { Action } from 'src/casl/actions';
-import { articles } from './models/articles.entity';
 import { SerchQuery } from './articles.dto/article.search.dto';
+import { AbiliteGuard } from './gards/Abilities.Guard';
+import { checkAbilites } from 'src/decorators/checkAbilites.decorator';
+import { Supject } from 'src/casl/casl-ability.factory/casl-ability.factory';
 @Controller('articles')
 export class ArticlesController {
-  constructor(
-    private articleservice: ArticlesService,
-    private caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+  constructor(private articleservice: ArticlesService) {}
   @Post('create')
   @UseGuards(JwtAuthGuard)
   createArticle(@currentUser() user: users, @Body() article: createArticle) {
@@ -53,30 +51,19 @@ export class ArticlesController {
   }
 
   @Patch('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AbiliteGuard)
+  @checkAbilites({ action: Action.Update, Supject: Supject.article })
   async updateArticle(
-    @currentUser() user: users,
     @Param('id') id: number,
     @Body() updateArticle: UpDateArticle,
   ) {
-    const article = await this.articleservice.getById(id);
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    if (!ability.can(Action.Update, article)) {
-      throw new ForbiddenException('user can not update this article');
-    }
     return this.articleservice.updateArticle(id, updateArticle);
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
-  async deleteArticle(@currentUser() user: users, @Param('id') id: number) {
-    const article = await this.articleservice.getById(id);
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    if (!ability.can(Action.Update, article)) {
-      throw new ForbiddenException('user can not update this article');
-    }
+  @UseGuards(JwtAuthGuard, AbiliteGuard)
+  @checkAbilites({ action: Action.Delete, Supject: Supject.article })
+  async deleteArticle(@Param('id') id: number) {
     return this.articleservice.deleteArticle(id);
   }
 

@@ -9,7 +9,6 @@ import {
   Delete,
   UseInterceptors,
   ClassSerializerInterceptor,
-  ForbiddenException,
   ParseIntPipe,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
@@ -18,15 +17,14 @@ import { users } from 'src/users/user.entity';
 import { JwtAuthGuard } from 'src/auth/gards/jwt.gard';
 import { CreateComment } from './comments.dto.ts/comment.create.dto';
 import { UpdateComment } from './comments.dto.ts/comment.update.dto';
-import { CaslAbilityFactory } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Supject } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { Action } from 'src/casl/actions';
+import { AbiliteGuard } from 'src/articles/gards/Abilities.Guard';
+import { checkAbilites } from 'src/decorators/checkAbilites.decorator';
 
 @Controller('comments')
 export class CommentsController {
-  constructor(
-    private commentService: CommentsService,
-    private caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+  constructor(private commentService: CommentsService) {}
 
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
@@ -44,35 +42,19 @@ export class CommentsController {
   }
 
   @Patch('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AbiliteGuard)
+  @checkAbilites({ action: Action.Update, Supject: Supject.comment })
   async updateComment(
-    @currentUser() user: users,
     @Param('id') id: number,
     @Body() updatecomment: UpdateComment,
   ) {
-    console.log(updatecomment);
-    const ability = this.caslAbilityFactory.createForUser(user);
-    const comment = await this.commentService.findOne(id);
-
-    if (!ability.can(Action.Update, comment)) {
-      return new ForbiddenException(
-        'user can not update this comment, not authorizer',
-      );
-    }
     return this.commentService.updateComment(id, updatecomment);
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
-  async deleteComment(@currentUser() user: users, @Param('id') id: number) {
-    const ability = this.caslAbilityFactory.createForUser(user);
-    const comment = await this.commentService.findOne(id);
-
-    if (!ability.can(Action.Delete, comment)) {
-      return new ForbiddenException(
-        'user can not delete this comment, not authorizer',
-      );
-    }
+  @UseGuards(JwtAuthGuard, AbiliteGuard)
+  @checkAbilites({ action: Action.Delete, Supject: Supject.comment })
+  async deleteComment(@Param('id') id: number) {
     return this.commentService.deleteComment(id);
   }
 }

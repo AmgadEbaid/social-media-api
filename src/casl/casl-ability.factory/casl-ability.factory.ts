@@ -10,8 +10,11 @@ import { Action } from '../actions';
 import { articles } from 'src/articles/models/articles.entity';
 import { users } from 'src/users/user.entity';
 
-type Subjects = InferSubjects<typeof articles | typeof users> | 'all';
-
+export enum Supject {
+  user = 'users',
+  article = 'articles',
+  comment = 'Comments',
+}
 @Injectable()
 export class CaslAbilityFactory {
   createForUser(user: users) {
@@ -22,11 +25,11 @@ export class CaslAbilityFactory {
     } else {
       can(Action.Read, 'all'); // read-only access to everything
     }
-    can(Action.Update, 'articles', { userId: user.id });
-    can(Action.Delete, 'articles', { userId: user.id });
+    can(Action.Update, Supject.article, { userId: user.id });
+    can(Action.Delete, Supject.article, { userId: user.id });
 
-    can(Action.Update, 'Comments', { userId: user.id });
-    can(Action.Delete, 'Comments', { userId: user.id });
+    can(Action.Update, Supject.comment, { userId: user.id });
+    can(Action.Delete, Supject.comment, { userId: user.id });
 
     const ability = build();
     return ability;
