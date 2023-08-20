@@ -307,7 +307,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbWEiLCJzdWIiOjEsImlhdCI6MTY5MjEyNDA3NywiZXhwIjoxNjkyMjk2ODc3fQ.70XusFv4vfbKYtqUXUfQTwRz7ShwQAVttWfB2GdxHgA",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtZ2FkIiwic3ViIjoyLCJpYXQiOjE2OTI0MjkxMzgsImV4cCI6MTY5MjYwMTkzOH0.ibndKEMz1KDlb3XwuBciwHi7VL7GZNQMvF2DNcuIjKU",
 							"type": "string"
 						}
 					]
@@ -316,7 +316,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"body\":\"werwe\",\r\n    \"articleId\":2,\r\n\"parentId\":3\r\n}",
+					"raw": "{\r\n    \"body\":\"child child\",\r\n    \"articleId\":5,\r\n\"parentId\":27\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -479,6 +479,106 @@
 							"key": "order",
 							"value": "DESC"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete like from article",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtZ2FkIiwic3ViIjoyLCJpYXQiOjE2OTI0MjkxMzgsImV4cCI6MTY5MjYwMTkzOH0.ibndKEMz1KDlb3XwuBciwHi7VL7GZNQMvF2DNcuIjKU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/articles/deletefavorites/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"articles",
+						"deletefavorites",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add like to article ",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/articles/addfavorites/4",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"articles",
+						"addfavorites",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "comment childerns",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/comments/article/5/18",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"comments",
+						"article",
+						"5",
+						"18"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Favorites articles",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtZ2FkIiwic3ViIjoxLCJpYXQiOjE2OTI1MjQzNjgsImV4cCI6MTY5MjY5NzE2OH0.XmlA_RbJHoy_TT_JIFbJkagvbPTwfR0ru_lDmTOuHdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/articles/Favorites",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"articles",
+						"Favorites"
 					]
 				}
 			},
