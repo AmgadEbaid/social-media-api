@@ -37,11 +37,13 @@ export class CommentsController {
   }
 
   @Get('article/:id')
+  @UseInterceptors(ClassSerializerInterceptor)
   getComments(@Param('id', ParseIntPipe) id: number) {
     return this.commentService.getComments(id);
   }
 
   @Patch('/:id')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard, AbiliteGuard)
   @checkAbilites({ action: Action.Update, Supject: Supject.comment })
   async updateComment(

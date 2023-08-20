@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Request,
+  UseInterceptors,
 } from '@nestjs/common/decorators';
 import { authService } from './auth.service';
 import { UseGuards } from '@nestjs/common/decorators';
@@ -12,6 +13,7 @@ import { localAuthGard } from './gards/local.gard';
 import { createUser } from 'src/users/dtos/create.user.dto';
 import { JwtAuthGuard } from './gards/jwt.gard';
 import { currentUser } from 'src/decorators/current-user.decorator';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 
 @Controller('auth')
 export class authControler {
@@ -24,14 +26,15 @@ export class authControler {
   }
 
   @Post('singup')
+  @UseInterceptors(ClassSerializerInterceptor)
   async singup(@Body() user: createUser) {
     return this.authservice.sinup(user);
   }
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
   getprofile(@currentUser() user: users) {
     return user;
   }
-  
 }

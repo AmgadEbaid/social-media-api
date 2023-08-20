@@ -8,9 +8,6 @@ import {
   UpdateDateColumn,
   ManyToOne,
   DeleteDateColumn,
-  Tree,
-  TreeChildren,
-  TreeParent,
 } from 'typeorm';
 
 import { Exclude, Transform } from 'class-transformer';
@@ -42,7 +39,7 @@ export class Comments {
     eager: true,
   })
   user: users;
-
+  @Exclude()
   @ManyToOne(() => articles, (articles) => articles.comments, {})
   article: articles;
 }

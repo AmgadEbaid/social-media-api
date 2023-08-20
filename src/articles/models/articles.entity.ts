@@ -1,3 +1,4 @@
+import { Exclude, Transform } from 'class-transformer';
 import { type } from 'os';
 import { Comments } from 'src/comments/comments.entity';
 import { users } from 'src/users/user.entity';
@@ -34,12 +35,13 @@ export class articles {
   @UpdateDateColumn()
   updated: Date;
 
+  @Transform(({ value }) => value.diplayname)
   @ManyToOne(() => users, (user) => user.articles)
   user: users;
-
+  @Exclude()
   @OneToMany(() => Comments, (Comments) => Comments.article)
   comments: Comments[];
-
+  @Transform(({ value }) => value.diplayname)
   @ManyToMany(() => users, (users) => users.favoriteArticle)
   @JoinTable()
   favoreteUsers: users[];
