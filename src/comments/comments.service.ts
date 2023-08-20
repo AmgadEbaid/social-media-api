@@ -38,7 +38,7 @@ export class CommentsService {
   }
 
   async getComments(articlId: number) {
-    return this.commentsRepository.findBy({ id: articlId });
+    return this.commentsRepository.findBy({ articleId: articlId });
   }
 
   findOne(id: number) {
