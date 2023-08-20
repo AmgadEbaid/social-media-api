@@ -25,11 +25,11 @@ import { AbiliteGuard } from './gards/Abilities.Guard';
 import { checkAbilites } from 'src/decorators/checkAbilites.decorator';
 import { Supject } from 'src/casl/casl-ability.factory/casl-ability.factory';
 @Controller('articles')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ArticlesController {
   constructor(private articleservice: ArticlesService) {}
   @Post('create')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
   createArticle(@currentUser() user: users, @Body() article: createArticle) {
     const { titile, slug, content } = article;
     console.log(article);
@@ -37,25 +37,21 @@ export class ArticlesController {
   }
   @Get('Favorites')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
   getUserFavorites(@currentUser() user: users) {
     return this.articleservice.getUserFavorites(user);
   }
 
   @Get('/s')
-  @UseInterceptors(ClassSerializerInterceptor)
   searchArticles(@Query() serchQuery: SerchQuery) {
     return this.articleservice.searchArticle(serchQuery);
   }
   @Get()
-  @UseInterceptors(ClassSerializerInterceptor)
   getArtcles(@Query() body: QueryArticle) {
     console.log('some');
     return this.articleservice.getall(body.skip, body.take);
   }
 
   @Get('/:id')
-  @UseInterceptors(ClassSerializerInterceptor)
   getbyid(@Param('id') id: number) {
     console.log(id);
     return this.articleservice.getById(id);
@@ -63,7 +59,6 @@ export class ArticlesController {
 
   @Patch('/:id')
   @UseGuards(JwtAuthGuard, AbiliteGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
   @checkAbilites({ action: Action.Update, Supject: Supject.article })
   async updateArticle(
     @Param('id') id: number,
@@ -81,7 +76,6 @@ export class ArticlesController {
 
   @Post('addfavorites/:id')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
   addFavorites(
     @currentUser() user: users,
     @Param('id', ParseIntPipe) id: number,

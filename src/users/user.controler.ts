@@ -10,6 +10,8 @@ import {
 import { userService } from './users.service';
 import { createUser } from './dtos/create.user.dto';
 import { use } from 'passport';
+import { currentUser } from 'src/decorators/current-user.decorator';
+import { users } from './user.entity';
 @Controller('users')
 export class userscontroler {
   constructor(private userservice: userService) {}
@@ -20,7 +22,7 @@ export class userscontroler {
   }
 
   @Get('/:id')
-  async findone(@Param('id') id: number) {
+  findone(@Param('id') id: number) {
     return this.userservice.findone(id);
   }
 }

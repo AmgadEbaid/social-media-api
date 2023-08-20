@@ -23,11 +23,11 @@ import { AbiliteGuard } from 'src/articles/gards/Abilities.Guard';
 import { checkAbilites } from 'src/decorators/checkAbilites.decorator';
 
 @Controller('comments')
+@UseInterceptors(ClassSerializerInterceptor)
 export class CommentsController {
   constructor(private commentService: CommentsService) {}
 
   @Post()
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   CreateComment(
     @currentUser() user: users,
@@ -37,13 +37,11 @@ export class CommentsController {
   }
 
   @Get('article/:id')
-  @UseInterceptors(ClassSerializerInterceptor)
   getComments(@Param('id', ParseIntPipe) id: number) {
     return this.commentService.getComments(id);
   }
 
   @Patch('/:id')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard, AbiliteGuard)
   @checkAbilites({ action: Action.Update, Supject: Supject.comment })
   async updateComment(

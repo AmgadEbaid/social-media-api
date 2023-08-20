@@ -35,13 +35,11 @@ export class articles {
   @UpdateDateColumn()
   updated: Date;
 
-  @Transform(({ value }) => value.diplayname)
   @ManyToOne(() => users, (user) => user.articles)
   user: users;
   @Exclude()
   @OneToMany(() => Comments, (Comments) => Comments.article)
   comments: Comments[];
-  @Transform(({ value }) => value.diplayname)
   @ManyToMany(() => users, (users) => users.favoriteArticle)
   @JoinTable()
   favoreteUsers: users[];

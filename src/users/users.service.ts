@@ -31,8 +31,4 @@ export class userService {
 
     return users;
   }
-
-  update(id: string) {}
-
-  delete(id: string) {}
 }

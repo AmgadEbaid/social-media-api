@@ -35,9 +35,7 @@ export class Comments {
   @DeleteDateColumn()
   deleted: Date;
 
-  @ManyToOne(() => users, (users) => users.comments, {
-    eager: true,
-  })
+  @ManyToOne(() => users, (users) => users.comments)
   user: users;
   @Exclude()
   @ManyToOne(() => articles, (articles) => articles.comments, {})

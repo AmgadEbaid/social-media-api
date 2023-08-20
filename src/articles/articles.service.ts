@@ -132,7 +132,7 @@ export class ArticlesService {
   getUserFavorites(user: users) {
     return this.articleRepository
       .createQueryBuilder()
-      .innerJoinAndSelect('articles.favoreteUsers', 'users')
+      .leftJoinAndSelect('articles.user', 'users')
       .where('users.id =:userid', { userid: user.id })
       .getManyAndCount();
   }

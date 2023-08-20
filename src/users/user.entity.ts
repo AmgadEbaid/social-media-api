@@ -24,13 +24,11 @@ export class users {
   password: string;
   @Column({ default: false })
   IsAdmin: boolean;
-  @Exclude()
   @OneToMany(() => articles, (articles) => articles.user)
   articles: articles[];
   @Exclude()
   @OneToMany(() => Comments, (Comments) => Comments.user)
   comments: Comments[];
-  @Exclude()
   @ManyToMany(() => articles, (articles) => articles.favoreteUsers)
   favoriteArticle: articles[];
 }
